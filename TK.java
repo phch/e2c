@@ -3,17 +3,17 @@
 // Token Kind (internal representations of tokens)
 
 public class TK {
-    private final String name;
+	private final String name;
 
     // declaring constructor as private prevents outsiders
     // from creating new tokens;
     // and so can test equality using ==.
-    private TK(String name) {
-       this.name = name;
-   }
+	private TK(String name) {
+		this.name = name;
+	}
     public String toString() { // make it printable for debugging
-       return name;
-   }
+    	return name;
+    }
 
     // each token has a TK object.
 
