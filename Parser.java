@@ -42,28 +42,59 @@ public class Parser {
 			}
 		}
 
-		private void check_declaration(Token s){
-			boolean exists = false;
+        private void checkDeclaration(Token tk){
+            boolean exists = false;
             //if there is an undeclaration error
-			for (ArrayList<String> arr : scoping) {
-				for(String var : arr) {
-					if (s.string.equals(var))
-						exists = true;
-				}
-			} if (!exists) {
-				undeclared_error(s);
-			}
-		}
+            for (ArrayList<String> arr : scoping) {
+                for(String var : arr) {
+                    if (tk.string.equals(var))
+                        exists = true;
+                }
+            } if (!exists) {
+                undeclared_error(tk);
+            }
+        }
+
+        private ArrayList<String> getScope(int scope) {
+            // global scope
+            if (scope == -1) {
+                return scoping
+            }
+
+            // ERROR. GLOBAL SCOPE MIGHT NOT BE THE FIRST SCOPE?
+        }
+
+        private void checkDeclaration(String prefix, Token tk){
+            boolean exists = false;
+            String varName = prefix + tk.string;
+
+            // '~<id>' is global scope, denoted by -1
+            int scope = (prefix.substring(1).equals("")) ? -1 : Integer.parseInt(prefix.substring(1));
+
+            //if there is an undeclaration error
+            // for (ArrayList<String> arr : scoping) {
+            //     for(String var : arr) {
+            //         if (tk.string.equals(var))
+            //             exists = true;
+            //     }
+            // } if (!exists) {
+            //     scoping_error(varName, tk.lineNumber);
+            // }
+        }
 
         // Error statements
-		private void redeclaration_error(String var) {
-			System.err.print( "redeclaration of variable " + var + '\n');
+		private void redeclaration_error(String s) {
+			System.err.print( "redeclaration of variable " + s + '\n');
 		}
 
-		private void undeclared_error(Token var) {
-			System.err.print(var.string + " is an undeclared variable on line " + var.lineNumber + '\n');
+		private void undeclared_error(Token tk) {
+			System.err.print(tk.string + " is an undeclared variable on line " + tk.lineNumber + '\n');
 			System.exit(1);
 		}
+
+        private void scoping_error(String s, int lineNumber) {
+            System.err.print( "no such variable " + s + " on line " + lineNumber );
+        }
 	}
 
 	SymbolTable st = new SymbolTable();
@@ -159,13 +190,27 @@ public class Parser {
     }
 
     private void ref_id() {
+        boolean checkScope = false;
+        String prefix = null;
     	if(is(TK.TILDE)) {
+            prefix = "~";
     		scan();
-    		if (is(TK.NUM)){
+    		if (is(TK.NUM)) {
+                prefix = prefix + tok.string;
     			scan();
-    		}
+            }
     	}
-    	st.check_declaration(tok);
+
+        // Ensure that the ID has been declared
+        if (prefix != null) {
+            // Variable scope restricted by '~'
+            st.checkDeclaration(prefix, tok);
+        } 
+        else {
+            // Check all declaration blocks
+            st.checkDeclaration(tok);
+        }
+
     	mustbe(TK.ID);
     }
 
