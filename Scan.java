@@ -66,45 +66,45 @@ public class Scan {
     				case ',':
     				return ccase1(',',TK.COMMA);
     				case '(':
-    					return ccase1('(',TK.LPAREN);
-    						case ')':
-return ccase1(')',TK.RPAREN);
-case '+':
-return ccase1('+',TK.PLUS);
-case '-':
-return ccase1('-',TK.MINUS);
-case '*':
-return ccase1('*',TK.TIMES);
-case '/':
-return ccase1('/',TK.DIVIDE);
-case '[':
-return ccase1('[',TK.IF);
-case ':':
-return ccase1(':',TK.THEN);
-case '|':
-return ccase1('|',TK.ELSEIF);
-case '%':
-return ccase1('%',TK.ELSE);
-case ']':
-return ccase1(']',TK.ENDIF);
-case '<':
-return ccase1('<',TK.DO);
-case '>':
-return ccase1('>', TK.ENDDO);
-case '=':
-return ccase1('=', TK.ASSIGN);
-case '~':
-return ccase1('~', TK.TILDE);
-case EOF:
-got_eof = true;
-return new Token(TK.EOF,
-	new String("*EOF*"),
-	linenumber);
-case '\n':
-linenumber++;
-break;
-case ' ':
-case '\t':
+    				return ccase1('(',TK.LPAREN);
+    				case ')':
+    				return ccase1(')',TK.RPAREN);
+    				case '+':
+    				return ccase1('+',TK.PLUS);
+    				case '-':
+    				return ccase1('-',TK.MINUS);
+    				case '*':
+    				return ccase1('*',TK.TIMES);
+    				case '/':
+    				return ccase1('/',TK.DIVIDE);
+    				case '[':
+    				return ccase1('[',TK.IF);
+    				case ':':
+    				return ccase1(':',TK.THEN);
+    				case '|':
+    				return ccase1('|',TK.ELSEIF);
+    				case '%':
+    				return ccase1('%',TK.ELSE);
+    				case ']':
+    				return ccase1(']',TK.ENDIF);
+    				case '<':
+    				return ccase1('<',TK.DO);
+    				case '>':
+    				return ccase1('>', TK.ENDDO);
+    				case '=':
+    				return ccase1('=', TK.ASSIGN);
+    				case '~':
+    				return ccase1('~', TK.TILDE);
+    				case EOF:
+    				got_eof = true;
+    				return new Token(TK.EOF,
+    					new String("*EOF*"),
+    					linenumber);
+    				case '\n':
+    				linenumber++;
+    				break;
+    				case ' ':
+    				case '\t':
 		    case '\r': // for Windows (lines end in \r\n)
 			break; // whitespace is easy to ignore
 		    case '#': // gobble comments
