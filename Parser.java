@@ -3,8 +3,6 @@ import java.util.*;
 
 public class Parser {
 
-<<<<<<< HEAD
-=======
 	public static class SymbolTable {
         // Mimicking "stack" behavior with vector class
 		ArrayList<ArrayList<String>> scoping = new ArrayList<ArrayList<String>>();
@@ -98,7 +96,6 @@ public class Parser {
         }
 	}
 
->>>>>>> 1a95f34a90c8ce440244c2a8feae4c218e142d3d
 	SymbolTable st = new SymbolTable();
 
     // tok is global to all these parsing methods;
