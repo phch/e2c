@@ -50,18 +50,10 @@ public class Parser {
                     if (tk.string.equals(var))
                         exists = true;
                 }
-            } if (!exists) {
+            }
+            if (!exists) {
                 undeclared_error(tk);
             }
-        }
-
-        private ArrayList<String> getScope(int scope) {
-            // global scope
-            if (scope == -1) {
-                return scoping
-            }
-
-            // ERROR. GLOBAL SCOPE MIGHT NOT BE THE FIRST SCOPE?
         }
 
         private void checkDeclaration(String prefix, Token tk){
@@ -70,16 +62,22 @@ public class Parser {
 
             // '~<id>' is global scope, denoted by -1
             int scope = (prefix.substring(1).equals("")) ? -1 : Integer.parseInt(prefix.substring(1));
+            
+            // Search global block or specific block for variable declaration
+            int blockIndex = (scope == -1) ? 0 : scoping.size() - 1 - scope;
 
-            //if there is an undeclaration error
-            // for (ArrayList<String> arr : scoping) {
-            //     for(String var : arr) {
-            //         if (tk.string.equals(var))
-            //             exists = true;
-            //     }
-            // } if (!exists) {
-            //     scoping_error(varName, tk.lineNumber);
-            // }
+            // Bad '~' scoping reference
+            if (blockIndex < 0)
+                scoping_error(varName, tk.lineNumber);
+
+            for(String var : scoping.get(blockIndex)) {
+                if (tk.string.equals(var))
+                    exists = true;
+            }
+            
+            if (!exists) {
+                scoping_error(varName, tk.lineNumber);
+            }
         }
 
         // Error statements
@@ -93,7 +91,8 @@ public class Parser {
 		}
 
         private void scoping_error(String s, int lineNumber) {
-            System.err.print( "no such variable " + s + " on line " + lineNumber );
+            System.err.print( "no such variable " + s + " on line " + lineNumber + "\n");
+            System.exit(1);
         }
 	}
 
