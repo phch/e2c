@@ -96,133 +96,133 @@ public class Scan {
     				case '~':
     				return ccase1('~', TK.TILDE);
     				case EOF:
-        				got_eof = true;
-        				return new Token(TK.EOF,
-        					new String("*EOF*"),
-        					linenumber);
+    				got_eof = true;
+    				return new Token(TK.EOF,
+    					new String("*EOF*"),
+    					linenumber);
     				case '\n':
-        				linenumber++;
-        				break;
+    				linenumber++;
+    				break;
     				case ' ':
     				case '\t':
-		            case '\r': // for Windows (lines end in \r\n)
-			            break; // whitespace is easy to ignore
-		            case '#': // gobble comments
-            		    do {
-            		    	c = getchar();
-            		    } while( c != '\n' && c != EOF );
-            		    putback = true;
-            		    break;
-		            default:
-            		    System.err.print(
-            		    	"scan: line "+linenumber+
-            		    	" bad char (ASCII " + c
-            		    		+ ")\n");
-            		    break;
-		        }
-	        }
-        }
-    }
+		    case '\r': // for Windows (lines end in \r\n)
+			break; // whitespace is easy to ignore
+		    case '#': // gobble comments
+		    do {
+		    	c = getchar();
+		    } while( c != '\n' && c != EOF );
+		    putback = true;
+		    break;
+		    default:
+		    System.err.print(
+		    	"scan: line "+linenumber+
+		    	" bad char (ASCII " + c
+		    		+ ")\n");
+		    break;
+		}
+	}
+}
+}
 
 
-    private int getchar() {
-    	int c = EOF;
-    	try {
-    		c = isr.read();
-    	} catch (java.io.IOException e) {
-    		System.err.println("oops ");
-    		e.printStackTrace();
-    	}
-    	return c;
-    }
+private int getchar() {
+	int c = EOF;
+	try {
+		c = isr.read();
+	} catch (java.io.IOException e) {
+		System.err.println("oops ");
+		e.printStackTrace();
+	}
+	return c;
+}
 
-    private Token ccase1(char c, TK r) {
-    	return new Token(r, new String(String.valueOf(c)), linenumber);
-    }
-
-    // not used in this scanner
-    private Token ccase1or2(char c1, char c2, TK r1, TK r2) {
-    	int c = getchar();
-    	if (c == c2) {
-    		return new Token(
-    			r2,
-    			new String(String.valueOf(c1)+String.valueOf(c2)),
-    			linenumber);
-    	}
-    	else {
-    		putback = true;
-    		return new Token(r1, new String(String.valueOf(c1)), linenumber);
-    	}
-    }
+private Token ccase1(char c, TK r) {
+	return new Token(r, new String(String.valueOf(c)), linenumber);
+}
 
     // not used in this scanner
-    private Token ccase2(char c1, char c2, TK r) {
-    	int c = getchar();
-    	if (c == c2) {
-    		return new Token(
-    			r, String.valueOf(c1)+String.valueOf(c2),
-    			linenumber);
-    	}
-    	else {
-    		System.err.print("scan: got got " + c1 +
-    			" missing " + c2 +
-    			" (got ASCII " + c + ")\n");
-    		return new Token(TK.ERROR, "bad ccase2", linenumber);
-    	}
-    }
+private Token ccase1or2(char c1, char c2, TK r1, TK r2) {
+	int c = getchar();
+	if (c == c2) {
+		return new Token(
+			r2,
+			new String(String.valueOf(c1)+String.valueOf(c2)),
+			linenumber);
+	}
+	else {
+		putback = true;
+		return new Token(r1, new String(String.valueOf(c1)), linenumber);
+	}
+}
+
+    // not used in this scanner
+private Token ccase2(char c1, char c2, TK r) {
+	int c = getchar();
+	if (c == c2) {
+		return new Token(
+			r, String.valueOf(c1)+String.valueOf(c2),
+			linenumber);
+	}
+	else {
+		System.err.print("scan: got got " + c1 +
+			" missing " + c2 +
+			" (got ASCII " + c + ")\n");
+		return new Token(TK.ERROR, "bad ccase2", linenumber);
+	}
+}
 
     // rather than duplicating code, as done below,
     // could use method "pointer" technique for these build methods.
 
     // build up an ID token
     // (could use StringBuffer to make this more efficient...)
-    private String buildID() {
-    	int k = 0;
-    	String str = "";
-    	do {
-    		str += (char) c;
-    		k++;
-    		c = getchar();
-    	} while( myisalpha((char) c) && k < MAXLEN_ID );
-    	putback = true;
-    	if( myisalpha((char) c) && k == MAXLEN_ID ) {
-    		do { c = getchar(); } while(myisalpha((char) c));
-    		System.err.print("scan: identifier too long -- truncated to "
-    			+ str + "\n");
-    	}
-    	return str;
-    }
+private String buildID() {
+	int k = 0;
+	String str = "";
+	do {
+		str += (char) c;
+		k++;
+		c = getchar();
+	} while( myisalpha((char) c) && k < MAXLEN_ID );
+	putback = true;
+	if( myisalpha((char) c) && k == MAXLEN_ID ) {
+		do { c = getchar(); } while(myisalpha((char) c));
+		System.err.print("scan: identifier too long -- truncated to "
+			+ str + "\n");
+	}
+	return str;
+}
 
     // build up a NUM str
     // (could use StringBuffer to make this more efficient...)
-    private String buildNUM() {
-    	int k = 0;
-    	String str = "";
-    	do {
-    		str += (char) c;
-    		k++;
-    		c = getchar();
-    	} while( myisdigit((char) c) && k < MAXLEN_ID );
-    	putback = true;
-    	if( myisdigit((char) c) && k == MAXLEN_ID ) {
-    		do { c = getchar(); } while(myisdigit((char) c));
-    		System.err.print("scan: number too long -- truncated to "
-    			+ str + "\n");
-    	}
-    	return str;
-    }
+private String buildNUM() {
+	int k = 0;
+	String str = "";
+	do {
+		str += (char) c;
+		k++;
+		c = getchar();
+	} while( myisdigit((char) c) && k < MAXLEN_ID );
+	putback = true;
+	if( myisdigit((char) c) && k == MAXLEN_ID ) {
+		do { c = getchar(); } while(myisdigit((char) c));
+		System.err.print("scan: number too long -- truncated to "
+			+ str + "\n");
+	}
+	return str;
+}
 
 
     // E's idea of what can form an identifier
     // (could instead directly call Character.isLetter)
-    private static boolean myisalpha(char c) {
-    	return Character.isLetter(c);
-    }
+private static boolean myisalpha(char c) {
+	return Character.isLetter(c);
+}
 
     // E's idea of what can form a number
     // (could instead directly call Character.isDigit)
-    private static boolean myisdigit(char c) {
-    	return Character.isDigit(c);
-    }
+private static boolean myisdigit(char c) {
+	return Character.isDigit(c);
+}
 
 }
