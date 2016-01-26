@@ -96,31 +96,31 @@ public class Scan {
     				case '~':
     				return ccase1('~', TK.TILDE);
     				case EOF:
-    				got_eof = true;
-    				return new Token(TK.EOF,
-    					new String("*EOF*"),
-    					linenumber);
+        				got_eof = true;
+        				return new Token(TK.EOF,
+        					new String("*EOF*"),
+        					linenumber);
     				case '\n':
-    				linenumber++;
-    				break;
+        				linenumber++;
+        				break;
     				case ' ':
     				case '\t':
-        		    case '\r': // for Windows (lines end in \r\n)
-        			    break; // whitespace is easy to ignore
-        		    case '#': // gobble comments
+		            case '\r': // for Windows (lines end in \r\n)
+			            break; // whitespace is easy to ignore
+		            case '#': // gobble comments
             		    do {
             		    	c = getchar();
             		    } while( c != '\n' && c != EOF );
-        		        putback = true;
-        		        break;
-        		    default:
+            		    putback = true;
+            		    break;
+		            default:
             		    System.err.print(
             		    	"scan: line "+linenumber+
             		    	" bad char (ASCII " + c
             		    		+ ")\n");
-        		        break;
+            		    break;
 		        }
-            }
+	        }
         }
     }
 
@@ -140,7 +140,7 @@ public class Scan {
     	return new Token(r, new String(String.valueOf(c)), linenumber);
     }
 
-        // not used in this scanner
+    // not used in this scanner
     private Token ccase1or2(char c1, char c2, TK r1, TK r2) {
     	int c = getchar();
     	if (c == c2) {
@@ -155,7 +155,7 @@ public class Scan {
     	}
     }
 
-        // not used in this scanner
+    // not used in this scanner
     private Token ccase2(char c1, char c2, TK r) {
     	int c = getchar();
     	if (c == c2) {

@@ -2,6 +2,7 @@
 import java.util.*;
 
 public class Parser {
+
 	SymbolTable st = new SymbolTable();
 
     // tok is global to all these parsing methods;
