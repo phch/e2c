@@ -115,14 +115,17 @@ public class Parser {
     }
 
     private void program() {
+        System.out.print("main()");
     	block();
     }
 
     private void block(){
     	st.addList();
+        System.out.print("{");
     	declaration_list();
     	statement_list();
     	st.removeList();
+        System.out.print("}");
     }
 
     private void declaration_list() {
@@ -138,19 +141,20 @@ public class Parser {
 
     private void declaration() {
     	mustbe(TK.DECLARE);
-
+        System.out.print("int ");
         // Add variable declaration to block array list
     	st.addVariable(tok.string);
-
-    	mustbe(TK.ID);
+    	System.out.print("x_" + tok.string);
+        mustbe(TK.ID);
     	while( is(TK.COMMA) ) {
     		scan();
 
             // Add variable declaration to block array list
     		st.addVariable(tok.string);
-
+            System.out.print(", x_" + tok.string);
     		mustbe(TK.ID);
     	}
+        System.out.print(";");
     }
 
     private void statement_list() {
@@ -179,13 +183,17 @@ public class Parser {
 
     private void print() {
     	mustbe(TK.PRINT);
+        System.out.print("printf(\"%d\", ");
     	expr();
+        System.out.print(");");
     }
 
     private void assignment() {
     	ref_id();
+        System.out.print("=");
     	mustbe(TK.ASSIGN);
     	expr();
+        System.out.print(";");
     }
 
     private void ref_id() {
@@ -210,11 +218,13 @@ public class Parser {
             st.checkDeclaration(tok);
         }
 
+        System.out.print("x_" + tok.string);
     	mustbe(TK.ID);
     }
 
 
     private void DO(){
+        System.out.print("while");
     	mustbe(TK.DO);
     	guarded_command();
     	mustbe(TK.ENDDO);
@@ -235,7 +245,9 @@ public class Parser {
     }
 
     private void guarded_command(){
+        System.out.print("(");
     	expr();
+        System.out.print(")")
     	mustbe(TK.THEN);
     	block();
     }
@@ -243,6 +255,10 @@ public class Parser {
     private void expr(){
     	term();
     	while (is(TK.PLUS) || is(TK.MINUS)){
+            if (is(TK.PLUS))
+                System.out.print("+");
+            if (is(TK.MINUS))
+                System.out.print("-");
     		scan();
     		term();
     	}
@@ -251,6 +267,10 @@ public class Parser {
     private void term() {
     	factor();
     	while (is(TK.TIMES) || is(TK.DIVIDE)){
+            if (is(TK.TIMES))
+                System.out.print("*");
+            if (is(TK.DIVIDE))
+                System.out.print("/");
     		scan();
     		factor(); 
     	}
@@ -268,6 +288,7 @@ public class Parser {
     	}
 
     	else if (is(TK.NUM)){
+            System.out.print(tok.string);
     		scan();
     	}
     }
