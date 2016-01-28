@@ -7,6 +7,10 @@ public class Parser {
         // Mimicking "stack" behavior with vector class
 		ArrayList<ArrayList<String>> scoping = new ArrayList<ArrayList<String>>();
 
+		private int getLevel() {
+			return scoping.size() - 1;
+		}
+
 		private void addList() {
             // Add to the back of "stack"
 			scoping.add(new ArrayList<String>());
@@ -41,6 +45,30 @@ public class Parser {
                 // System.out.println(s + " at scope " + scoping.size());
 			}
 		}
+
+		private int findRecentDeclaration(Token tk) {
+            for (int i = scoping.size() - 1; i >= 0; i--) {
+            	ArrayList<String> arr = scoping.get(i);
+                for(String var : arr) {
+                    if (tk.string.equals(var))
+                        return i;
+                }
+            }
+
+            // Should never reach here because variable should always be defined
+            return -1;
+		}
+
+        private boolean definedInSameScope(Token tk){
+            // Check if the variable was declared multiple times in same immediate block
+            boolean exists = false;
+            for(String var : scoping.get(scoping.size() - 1)) {
+                if (tk.string.equals(var))
+                    exists = true;
+            }
+
+            return exists;
+        }
 
         private void checkDeclaration(Token tk){
             boolean exists = false;
@@ -141,22 +169,37 @@ public class Parser {
     }
 
     private void declaration() {
+    	boolean firstPrint = false;
+
     	mustbe(TK.DECLARE);
         System.out.print("int ");
+
+    	if ( is(TK.ID) && !st.definedInSameScope(tok)) 
+    	{
+            System.out.print("x_" + tok.string + String.valueOf(st.getLevel()));
+        	firstPrint = true;
+        }
+
         // Add variable declaration to block array list
     	st.addVariable(tok.string);
-    	System.out.print("x_" + tok.string);
         mustbe(TK.ID);
     	while( is(TK.COMMA) ) {
     		scan();
-    		System.out.print(", ");
+
+            // Output C code only if the variable is unique to immediate level
+        	if ( is(TK.ID) && !st.definedInSameScope(tok)) {
+	    		// Print comma only if first variable has been printed
+	        	if ( firstPrint )
+	        		System.out.print(",");
+	            System.out.print("x_" + tok.string + String.valueOf(st.getLevel()));
+	            firstPrint = true;
+	        }
 
             // Add variable declaration to block array list
     		st.addVariable(tok.string);
-    		if ( is(TK.ID) )
-            	System.out.print("x_" + tok.string);
-    		mustbe(TK.ID);
+	    	mustbe(TK.ID);
     	}
+
         System.out.print(";\n");
     }
 
@@ -202,12 +245,17 @@ public class Parser {
     private void ref_id() {
         boolean checkScope = false;
         String prefix = null;
+        String level = null;
     	if(is(TK.TILDE)) {
             prefix = "~";
     		scan();
     		if (is(TK.NUM)) {
                 prefix = prefix + tok.string;
+                level = String.valueOf(st.getLevel() - Integer.parseInt(tok.string));
     			scan();
+            }
+            else {
+            	level = "0";
             }
     	}
 
@@ -223,6 +271,12 @@ public class Parser {
 
         if ( is(TK.ID) )
         	System.out.print("x_" + tok.string);
+        if ( level != null )
+        	System.out.print(level);
+        else {
+        	int level2 = st.findRecentDeclaration(tok);
+        	System.out.print(String.valueOf(level2));
+        }
 
     	mustbe(TK.ID);
     }
@@ -287,8 +341,10 @@ public class Parser {
     private void factor(){
     	if (is(TK.LPAREN)){
     		scan();
+    		System.out.print("(");
     		expr();
     		mustbe(TK.RPAREN);
+    		System.out.print(")");
     	}
 
     	else if (is(TK.TILDE) || is(TK.ID)){
