@@ -115,7 +115,8 @@ public class Parser {
     }
 
     private void program() {
-        System.out.print("main()");
+    	System.out.print("#include <stdio.h>\n");
+        System.out.print("main() ");
     	block();
     }
 
@@ -148,13 +149,15 @@ public class Parser {
         mustbe(TK.ID);
     	while( is(TK.COMMA) ) {
     		scan();
+    		System.out.print(", ");
 
             // Add variable declaration to block array list
     		st.addVariable(tok.string);
-            System.out.print(", x_" + tok.string);
+    		if ( is(TK.ID) )
+            	System.out.print("x_" + tok.string);
     		mustbe(TK.ID);
     	}
-        System.out.print(";");
+        System.out.print(";\n");
     }
 
     private void statement_list() {
@@ -183,9 +186,9 @@ public class Parser {
 
     private void print() {
     	mustbe(TK.PRINT);
-        System.out.print("printf(\"%d\", ");
+        System.out.print("printf(\"%d\\n\", ");
     	expr();
-        System.out.print(");");
+        System.out.print(");\n");
     }
 
     private void assignment() {
@@ -193,7 +196,7 @@ public class Parser {
         System.out.print("=");
     	mustbe(TK.ASSIGN);
     	expr();
-        System.out.print(";");
+        System.out.print(";\n");
     }
 
     private void ref_id() {
@@ -218,7 +221,9 @@ public class Parser {
             st.checkDeclaration(tok);
         }
 
-        System.out.print("x_" + tok.string);
+        if ( is(TK.ID) )
+        	System.out.print("x_" + tok.string);
+
     	mustbe(TK.ID);
     }
 
@@ -232,22 +237,25 @@ public class Parser {
 
     private void IF(){
     	mustbe(TK.IF);
+    	System.out.print("if");
     	guarded_command();
     	while (is(TK.ELSEIF)){
     		scan();
+    		System.out.print("else if");
     		guarded_command();
     	}
     	if(is(TK.ELSE)){
     		scan();
+    		System.out.print("else");
     		block();
     	}
     	mustbe(TK.ENDIF); 
     }
 
     private void guarded_command(){
-        System.out.print("(");
+        System.out.print("( (");
     	expr();
-        System.out.print(")")
+        System.out.print(") <= 0)");
     	mustbe(TK.THEN);
     	block();
     }
