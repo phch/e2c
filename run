@@ -10,5 +10,5 @@ if( $#argv != 1 ) then
 endif
 
    (echo running e2c; java e2c < $1.e >! $1.c ) \
-&& (echo compiling the C generated code; gcc $1.c -o a.out) \
+&& (echo compiling the C generated code; cc -o a.out $1.c) \
 && (echo executing the a.out; ./a.out)

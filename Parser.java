@@ -144,7 +144,7 @@ public class Parser {
 
     private void program() {
     	System.out.print("#include <stdio.h>\n");
-        System.out.print("main() ");
+        System.out.print("int main() ");
     	block();
     }
 
@@ -283,8 +283,8 @@ public class Parser {
 
 
     private void DO(){
-        System.out.print("while");
     	mustbe(TK.DO);
+        System.out.print("while");
     	guarded_command();
     	mustbe(TK.ENDDO);
     }
@@ -303,7 +303,7 @@ public class Parser {
     		System.out.print("else");
     		block();
     	}
-    	mustbe(TK.ENDIF); 
+    	mustbe(TK.ENDIF);
     }
 
     private void guarded_command(){
