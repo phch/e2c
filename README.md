@@ -5,7 +5,7 @@ The general approach is to perform this translation in one pass, which means syn
 This project was divided and implemented in several parts:
 * Scanner
 * Parser
-* Symbol Table
+* Symbol table
 * Code generation
 
 
