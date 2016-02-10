@@ -1,5 +1,4 @@
-# E to C Translator #
-Java program that translates E programs to their semantically equivalent C programs.
+This is a Java program that translates E programs to their semantically equivalent C programs.
 
 The general approach is to perform this translation in one pass, which means syntactic analysis, semantic analysis, and code generation are all performed in one pass.
 
