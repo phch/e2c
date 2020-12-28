@@ -1,4 +1,5 @@
-This is a Java program that translates E programs to their semantically equivalent C programs.
+# Introduction
+Old college project in Java to translate E programs to their semantically equivalent C program.
 
 The general approach is to perform this translation in one pass, which means syntactic analysis, semantic analysis, and code generation are all performed in one pass.
 
@@ -8,8 +9,7 @@ This project was divided and implemented in several parts:
 * Symbol table
 * Code generation
 
-
-#### E Language BNF ####
+# E language BNF
     program ::= block
     block ::= declaration_list statement_list
     declaration_list ::= {declaration}
